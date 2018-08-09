@@ -1,6 +1,8 @@
 from typing import *
 from .functor import Functor
 
+__all__ = ['Some', 'Non']
+
 
 class Option(Functor):
     @staticmethod
@@ -69,6 +71,8 @@ class Some(Option):
         v = f(self.val)
         if not v or (isinstance(v, Option) and v.is_none()):
             return Non
+        elif (isinstance(v, Option) and v.is_defined()):
+            return v
         else:
             return Some(v)
 
@@ -79,16 +83,13 @@ class Some(Option):
         return self.val
 
     def __str__(self):
-        return f"Some({self.val})"
+        return "Some({})".format(self.val)
 
     def __repr__(self):
         return str(self)
 
 
 ################################## test ####################################
-import pytest
-
-
 def test_option():
     x = Some(3)
     assert isinstance(x, Option)
@@ -102,6 +103,9 @@ def test_option():
     assert x.flatmap(lambda x: x + 1).get() == 4
     assert x.flatmap(lambda x: None).is_none()
     assert x.flatmap(lambda x: Non).is_none()
+    assert x.flatmap(lambda x: Some(1)).get() == 1
+
+    import pytest
 
     x = Non
     assert isinstance(x, Option)
