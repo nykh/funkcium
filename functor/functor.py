@@ -1,5 +1,7 @@
 from typing import TypeVar, Generic, Callable, Sequence
 
+__all__ = ['Box']
+
 T = TypeVar('T')
 U = TypeVar('U')
 

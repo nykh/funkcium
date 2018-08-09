@@ -5,6 +5,8 @@ from copy import copy
 
 from .functor import Functor
 
+__all__ = ['List']
+
 
 class List(Functor, collections.Iterable):
     __overriden__ = ['map', 'flatmap', '__len__', '__iter__', '__add__', '__getitem__']
