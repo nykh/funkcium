@@ -1,5 +1,5 @@
-import types
-import collections
+from types import GeneratorType as geneator
+from collections import Iterable as iterable
 import itertools
 from copy import copy
 
@@ -8,13 +8,13 @@ from .functor import Functor
 __all__ = ['List']
 
 
-class List(Functor, collections.Iterable):
+class List(Functor, iterable):
     __overriden__ = ['map', 'flatmap', '__len__', '__iter__', '__add__', '__getitem__']
 
     def __init__(self, *args):
         if len(args) == 1:
             head = args[0]
-            if isinstance(head, collections.Iterable) or isinstance(head, types.GeneratorType):
+            if isinstance(head, iterable) or isinstance(head, geneator):
                 self._list = list(head)
             else:
                 self._list = [head]
@@ -53,10 +53,12 @@ class List(Functor, collections.Iterable):
 
 
 ############################### test ## #####################################
-import pytest
-
-
 def test_list_work_like_a_normal_list():
+    import pytest
+
+    nil = List()
+    assert len(nil) == 0
+
     x = List(0, 1, 2)
     assert x[0] == 0
     assert x[1] == 1
