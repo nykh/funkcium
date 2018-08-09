@@ -1,7 +1,10 @@
 import inspect
 
 
-class Func(object):
+__all__ = ['Func', 'Monad', 'fn', 'monad']
+
+
+class _Func(object):
     def __init__(self, f):
         self.f = f
 
@@ -19,9 +22,9 @@ def fn(f):
     return Func(f)
 
 
-class Curry(Func):
+class Func(_Func):
     def __init__(self, f, params=[]):
-        super(Curry, self).__init__(f)
+        super(Func, self).__init__(f)
         self.params = params
         self.expect_arity = len(inspect.signature(f).parameters) - len(params)
 
@@ -29,17 +32,13 @@ class Curry(Func):
         if len(args) == self.expect_arity:
             return self.f(*self.params, *args)
         elif len(args) < self.expect_arity:
-            return Curry(self.f, self.params + list(args))
+            return Func(self.f, self.params + list(args))
         else:
             raise TypeError("Too many paremters for curried functions! Expect {} got {}".format(
                 self.expect_arity, len(args)))
 
 
-def curry(f):
-    return Curry(f)
-
-
-class Monad(Func):
+class Monad(_Func):
     def __init__(self, f):
         super(Monad, self).__init__(f)
 
@@ -79,7 +78,7 @@ def test_monad():
 
 
 def test_currying():
-    @curry
+    @fn
     def f(x, y, z):
         return x + y + z
     assert f(1)(2)(3) == 6
