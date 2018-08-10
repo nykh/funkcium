@@ -27,6 +27,9 @@ class List(Functor, iterable):
     def flatmap(self, f):
         return List(itertools.chain(*map(f, self._list)))
 
+    def __eq__(self, other):
+        return self._list == list(other)
+
     def __len__(self):
         return len(self._list)
 
