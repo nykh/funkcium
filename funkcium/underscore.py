@@ -1,3 +1,6 @@
+import inspect
+from inspect import Signature, Parameter
+
 __all__ = ['underscore']
 
 
@@ -24,6 +27,8 @@ class _UnaryExpr(_AST):
 
 
 class _Id(_UnaryExpr):
+    __signature__ = Signature([Parameter('x', Parameter.POSITIONAL_ONLY)])
+
     def __init__(self):
         pass
 
@@ -33,8 +38,9 @@ class _Id(_UnaryExpr):
     def __repr__(self):
         return "_"
 
-
 class _BinaryExpr(_AST):
+    __signature__ = Signature([Parameter('y', Parameter.POSITIONAL_ONLY)])
+
     def __init__(self, name, f, a):
         self.info = {'name': name, 'a': a, 'f': f}
         self.f = f

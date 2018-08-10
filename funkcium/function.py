@@ -1,5 +1,5 @@
 import inspect
-
+from .underscore import _AST as AST
 
 __all__ = ['Func', 'Monad', 'fn', 'monad']
 
@@ -26,7 +26,11 @@ class Func(_Func):
     def __init__(self, f, params=[]):
         super(Func, self).__init__(f)
         self.params = params
-        self.expect_arity = len(inspect.signature(f).parameters) - len(params)
+        self.expect_arity = self.to_arity(f) - len(params)
+
+    @staticmethod
+    def to_arity(f):
+        return len(inspect.signature(f, follow_wrapped=False).parameters)
 
     def __call__(self, *args):
         if len(args) == self.expect_arity:
@@ -36,6 +40,9 @@ class Func(_Func):
         else:
             raise TypeError("Too many paremters for curried functions! Expect {} got {}".format(
                 self.expect_arity, len(args)))
+
+    def __repr__(self):
+        return "Func[{}]".format(self.f)
 
 
 class Monad(_Func):
