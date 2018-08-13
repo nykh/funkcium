@@ -22,10 +22,13 @@ def fn(f):
 
 
 class Func(_Func):
-    def __init__(self, f, params=[]):
+    def __init__(self, f, params=[], *, nargs=None):
         super(Func, self).__init__(f)
         self.params = params
-        self.expect_arity = self.to_arity(f) - len(params)
+        if nargs is None:
+            self.expect_arity = self.to_arity(f) - len(params)
+        else:
+            self.expect_arity = nargs
 
     @staticmethod
     def to_arity(f):
@@ -97,3 +100,11 @@ def test_currying():
 
     ff = f(1, 2) >> f(3, 4)
     assert ff(5) == (1 + 2 + 3 + 4 + 5)
+
+def test_currying_with_default_arg():
+    def f(x, y=1, z=2):
+        return x + y + z
+
+    F = Func(f, nargs=1)
+    assert F.expect_arity == 1
+    assert F(3) == 6
