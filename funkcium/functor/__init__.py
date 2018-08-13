@@ -1,3 +1,3 @@
 from .functor import *
-from ._list import *
+from .list_functor import *
 from .option import *
