@@ -1,5 +1,4 @@
 import inspect
-from .underscore import _AST as AST
 
 __all__ = ['Func', 'Monad', 'fn', 'monad']
 

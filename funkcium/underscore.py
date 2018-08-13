@@ -101,14 +101,10 @@ def test_ast():
 def test_underscore_basic():
     from function import Func
     from functor.list import List
-    from dataclasses import dataclass
+    from collections import namedtuple
 
     _ = _Id()
-
-    @dataclass
-    class point:
-        x: int
-        y: int
+    point = namedtuple('point', ['x', 'y'])
 
     ps = List(point(1, 2), point(3, 4), point(5, 6))
     xs = ps.map(_.x)
