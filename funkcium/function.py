@@ -29,7 +29,11 @@ class Func(_Func):
 
     @staticmethod
     def to_arity(f):
-        return len(inspect.signature(f, follow_wrapped=False).parameters)
+        try:
+            return len(inspect.signature(f, follow_wrapped=False).parameters)
+        except ValueError:
+            ## numpy ufunc support
+            return getattr(f, 'nin', 1)
 
     def __call__(self, *args):
         if len(args) == self.expect_arity:
