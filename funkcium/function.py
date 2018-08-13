@@ -27,11 +27,20 @@ class Func(_Func):
         self.params = params
         if nargs is None:
             self.expect_arity = self.to_arity(f) - len(params)
+            self.max_arity = self.to_max_arity(f) - len(params)
         else:
-            self.expect_arity = nargs
+            self.expect_arity = self.max_arity = nargs
 
     @staticmethod
     def to_arity(f):
+        try:
+            return sum(1 for p in inspect.signature(f, follow_wrapped=False).parameters.values() if p.default is inspect.Parameter.empty)
+        except ValueError:
+            ## numpy ufunc support
+            return getattr(f, 'nin', 1)
+
+    @staticmethod
+    def to_max_arity(f):
         try:
             return len(inspect.signature(f, follow_wrapped=False).parameters)
         except ValueError:
@@ -39,13 +48,13 @@ class Func(_Func):
             return getattr(f, 'nin', 1)
 
     def __call__(self, *args):
-        if len(args) == self.expect_arity:
+        if self.expect_arity <= len(args) <= self.max_arity:
             return self.f(*self.params, *args)
         elif len(args) < self.expect_arity:
             return Func(self.f, self.params + list(args))
         else:
-            raise TypeError("Too many paremters for curried functions! Expect {} got {}".format(
-                self.expect_arity, len(args)))
+            raise TypeError("Too many paremters for curried functions! Expect up to {} got {}".format(
+                self.max_arity, len(args)))
 
     def __repr__(self):
         return "Func[{}]".format(self.f)
@@ -107,4 +116,11 @@ def test_currying_with_default_arg():
 
     F = Func(f, nargs=1)
     assert F.expect_arity == 1
+    assert F.max_arity == 1
     assert F(3) == 6
+
+    F2 = Func(f)
+    assert F2.expect_arity == 1
+    assert F2.max_arity == 3
+    assert F2(3) == 6
+    assert F2(3, 5, 7) == 15
