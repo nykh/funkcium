@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='funkcium',
-      version='0.1.3',
+      version='0.1.4',
       description='Yet Another Python functional library, with scala inspiration',
       long_description=long_description,
       long_description_content_type="text/markdown",
@@ -12,7 +12,7 @@ setup(name='funkcium',
       author='nykh',
       author_email='nykh.pypi.199421@tryninja.io',
       license='MIT',
-      packages=['funkcium'],
+      packages=['funkcium', 'funkcium.functor'],
       classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
