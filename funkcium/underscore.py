@@ -79,15 +79,12 @@ underscore = _Id()
 
 
 def test_ast():
-    from dataclasses import dataclass
+    from collections import namedtuple
 
     x = _Id()
     assert x(1) == 1
 
-    @dataclass
-    class point:
-        x: int
-        y: int
+    point = namedtuple('point', ['x', 'y'])
 
     y = _GetAttr('x', _Id())
     assert y(point(1, 2)) == 1
