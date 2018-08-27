@@ -27,6 +27,12 @@ class List(Functor, iterable):
     def flatmap(self, f):
         return List(itertools.chain(*map(f, self._list)))
 
+    def unzip(self):
+        return zip(*self._list)
+
+    def transpose(self) -> 'List':
+        return List(self.unzip())
+
     def __eq__(self, other):
         return self._list == list(other)
 
